@@ -1,0 +1,28 @@
+{
+  "name": "nftrone-db-server",
+  "version": "1.0.0",
+  "description": "Local DB management for the NFTrone project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node index.ts",
+    "setup-db": "ts-node setup.ts",
+    "dev": "ts-node-dev src/server.ts"
+  },
+  "repository": "git@github.com:Mary-Ya/nftrone-db-server.git",
+  "author": "maryya",
+  "license": "none",
+  "private": true,
+  "dependencies": {
+    "express": "^4.19.2",
+    "sequelize": "^6.37.3",
+    "sqlite3": "^5.1.7",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "sequelize-cli": "^6.6.2",
+    "ts-node-dev": "^1.1.6",
+    "typescript": "^5.5.2"
+  }
+}
