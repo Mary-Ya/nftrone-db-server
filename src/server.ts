@@ -1,8 +1,16 @@
 import express from 'express';
-import sequelize from './config/db.config';
-import { Project } from './model';
+import sequelize from './db/config/db.config';
+import { Project } from './db/model';
+import { associations } from './db/config/db.associations';
 
-sequelize.sync().then(() => {
+sequelize.authenticate().then(() => {
+  associations();
+  console.log('Connection has been established successfully.');
+})
+
+sequelize.sync({
+  force: true
+}).then(() => {
   console.log('Database and tables synced!');
 });
 
@@ -23,4 +31,3 @@ app.post('/project', (req, res) => {
 app.listen(PORT, () => {
   console.log('Server is running on port ' + PORT);
 });
-
