@@ -34,6 +34,8 @@ Image.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
+
+  // scale and position of the image on the canvas
   x: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -50,6 +52,8 @@ Image.init({
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+
+
   layerID: {
     type: DataTypes.UUID,
     allowNull: false,

@@ -4,9 +4,9 @@ import sequelize from "../config/db.config";
 interface ProjectAttributes {
   id?: string;
   name: string;
-  canvas_height: number;
-  canvas_width: number;
-  background_color: string;
+  canvas_height?: number;
+  canvas_width?: number;
+  background_color?: string;
 }
 
 class Project extends Model { }
@@ -41,7 +41,7 @@ Project.init({
   // background color of the resulting images
   background_color: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 }, {
   sequelize,
