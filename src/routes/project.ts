@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { getProjects, postProjects } from "~/controllers/projects";
-import { buildExpressCallback } from "~/helpers/express-callback";
+import { buildExpressCallback } from "../helpers/express-callback";
+
 
 const router = Router();
 
 router.get("/", buildExpressCallback(getProjects));
-router.post("/", buildExpressCallback(postProjects));
+router.post("/", buildExpressCallback(createProject));
 
 export default router;

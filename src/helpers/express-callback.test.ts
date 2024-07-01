@@ -4,16 +4,13 @@ import { DEFAULT_ERROR_MESSAGE } from '../errors/error.messages';
 import { buildExpressCallback } from './express-callback';
 import { createRequest, createResponse } from "node-mocks-http";
 import { ClientError } from '../errors/client-error';
+import { IControllerResponse } from '../controllers/controllers.types';
 
 interface TestCase {
   description: string;
-  mockReturn: any;
+  mockReturn: IControllerResponse | Error;
   mockMethod: 'mockResolvedValue' | 'mockRejectedValue';
-  expectedResponse: {
-    success: boolean;
-    statusCode: StatusCodes;
-    body: any;
-  };
+  expectedResponse: IControllerResponse;
 }
 
 describe("buildExpressCallback", () => {
