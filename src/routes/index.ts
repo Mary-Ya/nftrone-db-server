@@ -1,9 +1,8 @@
 import { Router } from 'express';
-
-import projectApi from './project';
+import { projectRouter } from './project';
 
 const router = Router();
 
-router.use('/project', projectApi);
+router.use('/project', projectRouter);
 
 export default router;

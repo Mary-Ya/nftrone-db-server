@@ -2,6 +2,8 @@ import express from 'express';
 import sequelize from './db/config/db.config';
 import { Project } from './db/model';
 import { associations } from './db/config/db.associations';
+import { projectRouter } from './routes/project';
+import router from './routes';
 
 sequelize.authenticate().then(() => {
   associations();
@@ -20,12 +22,31 @@ const app = express();
 
 app.use(express.json());
 
+// use router 
+app.use(router);
+
 app.post('/project', (req, res) => {
   const { name, canvas_height, canvas_width, background_color } = req.body;
-  console.log(name, canvas_height, canvas_width, background_color);
-  Project.create(req.body).then((project) => {
-    res.send(project);
+  console.log(req.body);
+  const newProject = Project.build({
+    name,
+    canvas_height,
+    canvas_width,
+    background_color
   });
+  console.log(newProject);
+  newProject.validate().then(() => {
+
+    console.log('Project is valid');
+    newProject.save().then(() => {
+      res.send('Project created');
+    }).catch((err) => {
+      res.send(err);
+    });
+  }).catch((err) => {
+    console.log(err);
+  });
+
 });
 
 app.listen(PORT, () => {

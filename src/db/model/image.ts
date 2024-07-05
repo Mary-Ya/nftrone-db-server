@@ -17,8 +17,8 @@ class Image extends Model { }
 
 Image.init({
   privateId: {
-    type: DataTypes.INTEGER.UNSIGNED,
-    defaultValue: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER,
+    defaultValue: DataTypes.INTEGER,
     primaryKey: true,
   },
   id: {

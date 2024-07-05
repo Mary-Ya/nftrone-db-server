@@ -1,0 +1,1 @@
+export type SafeModelAttributes<T> = Omit<T, "privateId">;

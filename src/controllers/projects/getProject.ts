@@ -3,7 +3,7 @@ import { IHttpRequest } from "../../helpers/express-callback";
 import { IControllerResponse } from '../controllers.types';
 
 
-export const buildGetProjects = ({ listProjects }: { listProjects: IListProjects }) => {
+export const buildGetOneProject = ({ listProjects }: { listProjects: IListProjects }) => {
   return async (
     request: Partial<IHttpRequest>,
   ): Promise<IControllerResponse> => {

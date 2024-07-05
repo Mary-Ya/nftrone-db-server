@@ -1,18 +1,23 @@
-import { OK } from 'http-status-codes';
-import { IHttpRequest } from "../../helpers/express-callback";
-import { IControllerResponse } from '../controllers.types';
+import { IHttpRequest, buildExpressCallback } from "../../helpers/express-callback";
+import { Controller, IControllerResponse } from '../controllers.types';
+import { PlaneProjectList } from '../../../shared-types/project.output.types';
+import { IListProjects } from '../../services/projects';
+import { StatusCodes } from "http-status-codes";
 
 
-export const buildGetProjects = ({ listProjects }: { listProjects: IListProjects }) => {
+export const buildGetPlainProjects = ({ listProjects }: { listProjects: IListProjects<PlaneProjectList> }): Controller => {
   return async (
-    request: Partial<IHttpRequest>,
-  ): Promise<IControllerResponse> => {
-    const Projects = await listProjects();
-
-    return {
+    // request,
+  ) => {
+    const projects = await listProjects();
+    return Promise.resolve({
       success: true,
-      statusCode: OK,
-      body: Projects,
-    };
+      statusCode: StatusCodes.OK,
+      body: {
+        listProjects: {
+          projects,
+        }
+      }
+    });
   };
 };

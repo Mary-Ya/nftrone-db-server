@@ -1,11 +1,13 @@
-import { Project, ProjectAttributes } from "../db/model";
+import { PlaneProjectList, ProjectForCreation, ProjectList } from "../../shared-types/project.output.types";
+import { modelToPlainList } from "../data-mappers/model-to-plain-list";
+import { Project } from "../db/model";
 
-type ProjectForCreation = Omit<ProjectAttributes, "id">;
 
 export interface IProjectsDB {
-  findAll: () => Promise<Project[]>;
-  findById: (id: string) => Promise<Project | null>;
-  create: (data: ProjectForCreation) => Promise<Project>;
+  findAll: () => Promise<ProjectList>;
+  findAllPlane: () => Promise<PlaneProjectList>;
+  findById: (id: string) => Promise<any | null>;
+  create: (data: ProjectForCreation) => Promise<any>;
 }
 
 export const buildProjectsDB = ({
@@ -14,11 +16,26 @@ export const buildProjectsDB = ({
   model: typeof Project;
 }): IProjectsDB => {
   const findAll = async () => {
-    return model.findAll();
+    const projects = await model.scope('defaultScope').findAll();
+    return projects.map((project) => {
+      const p = project.toJSON();
+      return p;
+    });
   };
 
+  const findAllPlane = async () => {
+    const projects = await model.findAll({
+      attributes:
+      {
+        exclude: ['layers']
+      }
+
+    });
+    return modelToPlainList(projects);
+  }
+
   const findById = async (id: string) => {
-    return model.findOne({ where: { id } });
+    return model.findOne({ where: { id }, plain: true });
   }
 
   const create = async (data: ProjectForCreation) => {
@@ -27,6 +44,7 @@ export const buildProjectsDB = ({
 
   return {
     findAll,
+    findAllPlane,
     findById,
     create,
   };
