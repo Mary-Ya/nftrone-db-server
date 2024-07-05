@@ -1,8 +1,13 @@
 import { Router } from 'express';
-import { projectRouter } from './project';
+import { getProjectRouter } from './project';
+import { ModelsType } from '../db/model/buildAllModels';
 
-const router = Router();
+export const buildAllRoutes = (prodModels: ModelsType) => {
+  const router = Router();
 
-router.use('/project', projectRouter);
+  const projectRouter = getProjectRouter(prodModels);
 
-export default router;
+  router.use('/project', projectRouter);
+  return router;
+}
+export default buildAllRoutes;

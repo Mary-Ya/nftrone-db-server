@@ -1,5 +1,4 @@
 import { DataTypes as SeqDataTypes, Model, Sequelize } from "sequelize";
-import sequelize from "../config/db.config";
 import { LayerAttributes } from "./layer";
 
 interface ProjectAttributes {
@@ -12,7 +11,7 @@ interface ProjectAttributes {
 }
 
 
-export const getProjectModel = (sequelize: Sequelize, DataTypes: typeof SeqDataTypes) => {
+export const getProjectsModel = (sequelize: Sequelize, DataTypes: typeof SeqDataTypes) => {
   class Project extends Model { }
 
   Project.init({
@@ -66,7 +65,4 @@ export const getProjectModel = (sequelize: Sequelize, DataTypes: typeof SeqDataT
   });
 
   return Project;
-}
-
-const Project = getProjectModel(sequelize, SeqDataTypes);
-export { Project, ProjectAttributes }
+};

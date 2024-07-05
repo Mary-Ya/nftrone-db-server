@@ -1,7 +1,6 @@
 import { PlaneProjectList, ProjectForCreation, ProjectList } from "../../shared-types/project.output.types";
 import { modelToPlainList } from "../data-mappers/model-to-plain-list";
-import { Project } from "../db/model";
-
+import { ProjectModelType } from "../db/model/buildAllModels";
 
 export interface IProjectsDB {
   findAll: () => Promise<ProjectList>;
@@ -13,7 +12,7 @@ export interface IProjectsDB {
 export const buildProjectsDB = ({
   model
 }: {
-  model: typeof Project;
+  model: ProjectModelType;
 }): IProjectsDB => {
   const findAll = async () => {
     const projects = await model.scope('defaultScope').findAll();
@@ -29,7 +28,6 @@ export const buildProjectsDB = ({
       {
         exclude: ['layers']
       }
-
     });
     return modelToPlainList(projects);
   }

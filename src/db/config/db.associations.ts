@@ -1,6 +1,9 @@
-import { Project, Layer, Image } from "../model";
+import { Sequelize } from "sequelize";
+import { buildAllModels } from "../model/buildAllModels";
 
-export const associations = () => {
+export const associations = (sequelize: Sequelize) => {
+  const { Project, Layer, Image } = buildAllModels(sequelize);
+
   Project.hasMany(Layer, {
     foreignKey: 'projectID',
     onDelete: 'CASCADE',
@@ -26,4 +29,6 @@ export const associations = () => {
     onUpdate: 'CASCADE',
     targetKey: 'privateId',
   });
+
+  return { Project, Layer, Image };
 }
