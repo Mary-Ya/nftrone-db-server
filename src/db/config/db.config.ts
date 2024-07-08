@@ -39,4 +39,12 @@ export class DB {
   public getModels = () => {
     return DB.models;
   }
+
+  public async close() {
+    return DB.instance.close();
+  }
+
+  public async getSequelize() {
+    return DB.instance;
+  }
 }

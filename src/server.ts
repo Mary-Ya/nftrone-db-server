@@ -19,7 +19,7 @@ prodDb.start().then(() => {
 
   app.post('/project', (req, res) => {
     const { name, canvas_height, canvas_width, background_color } = req.body;
-    console.log(req.body);
+
     const newProject = prodModels.Project.build({
       name,
       canvas_height,
