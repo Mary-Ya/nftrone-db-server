@@ -1,18 +1,20 @@
 import { StatusCodes } from 'http-status-codes';
-import { IHttpRequest } from "../../helpers/express-callback";
 import { IControllerResponse } from '../controllers.types';
-import { buildProjectsDB } from '../../data-access/project';
+import { IListProjects } from '../../services/projects';
+import { ReachProjectList } from '../../../shared-types/project.output.types';
 
-export const buildGetProjects = ({ listProjects }: { listProjects: ReturnType<typeof buildProjectsDB.findAll> }) => {
+export const buildGetProjects = ({ listProjects }: { listProjects: IListProjects<ReachProjectList> }) => {
   return async (
-    request: Partial<IHttpRequest>,
+    // request: Partial<IHttpRequest>,
   ): Promise<IControllerResponse> => {
-    const Projects = await listProjects();
+    const projects = await listProjects();
 
     return {
       success: true,
       statusCode: StatusCodes.OK,
-      body: Projects,
+      body: {
+        listPlainProjects: projects
+      },
     };
   };
 };

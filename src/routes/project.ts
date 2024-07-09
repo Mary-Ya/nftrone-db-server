@@ -1,9 +1,10 @@
 import { ModelNames, ModelsType } from './../db/model/buildAllModels';
 import { Router } from "express";
 import { buildExpressCallback } from "../helpers/express-callback";
-import { buildListPlaneProjects } from "../services/projects";
+import { buildListPlaneProjects, buildListProjects } from "../services/projects";
 import { buildGetPlainProjects } from "../controllers/projects/getPlainProjects";
 import { buildProjectsDB } from "../data-access/project";
+import { buildGetProjects } from '../controllers/projects/getAllProjects';
 
 
 const getProjectRouter = (prodModels: ModelsType) => {
@@ -19,7 +20,15 @@ const getProjectRouter = (prodModels: ModelsType) => {
       })
     }
   )));
-  // router.get("/project/all", buildExpressCallback(getProjects));
+  router.get("/all", buildExpressCallback(buildGetProjects(
+    {
+      listProjects: buildListProjects({
+        ProjectsDB: buildProjectsDB({
+          model: prodModels[ModelNames.Project]
+        })
+      })
+    }
+  )));
   // router.post("/", buildExpressCallback(createProject));
 
   return router;

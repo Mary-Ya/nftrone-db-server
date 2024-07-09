@@ -1,7 +1,7 @@
 import { DataTypes as SeqDataTypes, Model, Sequelize } from "sequelize";
 import { LayerAttributes } from "./layer";
 
-interface ProjectAttributes {
+export interface ProjectAttributes {
   id?: string;
   name: string;
   canvas_height?: number;

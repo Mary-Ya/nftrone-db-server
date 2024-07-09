@@ -1,4 +1,4 @@
-import { ProjectAttributes } from "../src/db/model/buildAllModels";
+import { ProjectAttributes } from "../src/db/model/project";
 import { SafeModelAttributes } from "./0common.types";
 
 export type ReachProject = SafeModelAttributes<ProjectAttributes>;
