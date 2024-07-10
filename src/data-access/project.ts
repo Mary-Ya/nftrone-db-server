@@ -15,7 +15,7 @@ export const buildProjectsDB = ({
   model: ProjectModelType;
 }): IProjectsDB => {
   const findAll = async () => {
-    const projects = await model.scope('defaultScope').findAll();
+    const projects = await model.findAll();
     return projects.map((project) => {
       const p = project.toJSON();
       return p;
@@ -23,12 +23,7 @@ export const buildProjectsDB = ({
   };
 
   const findAllPlane = async () => {
-    const projects = await model.findAll({
-      attributes:
-      {
-        exclude: ['layers']
-      }
-    });
+    const projects = await model.scope('plane').findAll();
     return modelToPlainList(projects);
   }
 

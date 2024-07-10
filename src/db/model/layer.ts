@@ -1,4 +1,5 @@
 import { DataTypes as SeqDataTypes, Model, Sequelize } from "sequelize";
+import { ModelGetter } from "./models.types";
 
 interface LayerAttributes {
   privateId?: number;
@@ -12,7 +13,7 @@ interface LayerAttributes {
   projectID: string;
 }
 
-const getLayersModel = (sequelize: Sequelize, DataTypes: typeof SeqDataTypes) => {
+const getLayersModel: ModelGetter = (sequelize, DataTypes) => {
 
   class Layer extends Model { }
 

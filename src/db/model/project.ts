@@ -1,5 +1,6 @@
-import { DataTypes as SeqDataTypes, Model, Sequelize } from "sequelize";
+import { Model } from "sequelize";
 import { LayerAttributes } from "./layer";
+import { ModelGetter } from "./models.types";
 
 export interface ProjectAttributes {
   id?: string;
@@ -11,7 +12,7 @@ export interface ProjectAttributes {
 }
 
 
-export const getProjectsModel = (sequelize: Sequelize, DataTypes: typeof SeqDataTypes) => {
+export const getProjectsModel: ModelGetter = (sequelize, DataTypes, options) => {
   class Project extends Model { }
 
   Project.init({
@@ -51,17 +52,20 @@ export const getProjectsModel = (sequelize: Sequelize, DataTypes: typeof SeqData
     sequelize,
     modelName: 'project',
     defaultScope: {
+      ...options?.defaultScope,
       attributes: {
-        exclude: ["createdAt", "updatedAt"]
-      }
+        exclude: [...options?.defaultScope?.attributes?.exclude, "createdAt", "updatedAt"]
+      },
     },
     scopes: {
       plane: {
         attributes: {
-          exclude: ["layers", "privateId", "createdAt", "updatedAt"]
+          exclude: [...options?.defaultScope?.attributes?.exclude, "layers", "createdAt", "updatedAt"]
         }
-      }
+      },
+      ...options?.scopes
     },
+    ...options
   });
 
   return Project;

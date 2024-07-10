@@ -1,7 +1,8 @@
-import { Sequelize, DataTypes } from "sequelize";
+import { Sequelize, DataTypes, ModelOptions } from "sequelize";
 import { getImagesModel } from "./image";
 import { getLayersModel } from "./layer";
 import { getProjectsModel } from "./project";
+import { ModelGetter } from "./models.types";
 
 export const enum ModelNames {
   Layer = "Layer",
@@ -9,11 +10,23 @@ export const enum ModelNames {
   Project = "Project",
 }
 
+const globalModelOptions: ModelOptions = {
+  defaultScope: {
+    attributes: {
+      exclude: ["privateId"]
+    }
+  }
+}
+
+export const applyGlobalModelSettings = (sequelize: Sequelize, modelGetter: ModelGetter) => {
+  return modelGetter(sequelize, DataTypes, globalModelOptions);
+}
+
 export const buildAllModels = (sequelize: Sequelize) => {
   const models = {
-    [ModelNames.Layer]: getLayersModel(sequelize, DataTypes),
-    [ModelNames.Image]: getImagesModel(sequelize, DataTypes),
-    [ModelNames.Project]: getProjectsModel(sequelize, DataTypes),
+    [ModelNames.Layer]: applyGlobalModelSettings(sequelize, getLayersModel),
+    [ModelNames.Image]: applyGlobalModelSettings(sequelize, getImagesModel),
+    [ModelNames.Project]: applyGlobalModelSettings(sequelize, getProjectsModel),
   };
 
   return models;
