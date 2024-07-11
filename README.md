@@ -20,12 +20,14 @@ For now I wanted to deliver ASAP to go on with the Frontend part. This is a one 
 ATM Local DB would be enough. Choosing relational DB was a matter of being at least familiar with them.
 
 In this iteration DB structure looks like this: 
+```
 +---------+              +--------+                +-------+
 | Project |------------->| Layer  |--------------->| Image |
 +---------+   hasMany    +--------+     hasMany    +-------+
      |                    ^    |                      ^
      | belongsTo          |    | belongsTo            | belongsTo
      +--------------------+    +----------------------+  
+```
 
 In the next iterations new tables will be introduced to store generated and saved image variants. 
 
