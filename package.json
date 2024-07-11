@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --coverage --watch",
+    "test-once": "jest",
     "start": "ts-node-dev src/server.ts"
   },
   "repository": "git@github.com:Mary-Ya/nftrone-db-server.git",
