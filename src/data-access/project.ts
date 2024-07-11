@@ -32,6 +32,8 @@ export const buildProjectsDB = ({
   }
 
   const create = async (data: ProjectForCreation) => {
+    // TBD: add layers to the project
+
     return model.create(data);
   };
 
