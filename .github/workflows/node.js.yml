@@ -29,7 +29,3 @@ jobs:
     - run: npm ci
     - run: npm run test-once
 
-    - uses: gaelgirodon/ci-badges-action@v1
-      with:
-        gist-id: ${{ env.GIST_ID}}
-        token: ${{ secrets.GIST_TOKEN }}
