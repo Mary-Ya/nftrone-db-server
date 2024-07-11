@@ -1,4 +1,4 @@
-import { ModelNames, ModelsType } from './../db/model/buildAllModels';
+import { ModelNames, ModelsType } from '../db/model/buildAllModels';
 import { Router } from "express";
 import { buildExpressCallback } from "../helpers/express-callback";
 import { buildListPlaneProjects, buildListProjects } from "../services/projects";
@@ -11,21 +11,21 @@ const getProjectRouter = (prodModels: ModelsType) => {
 
   const router = Router();
 
+  const ProjectsDB = buildProjectsDB({
+    model: prodModels[ModelNames.Project]
+  });
+
   router.get("/plain/all", buildExpressCallback(buildGetPlainProjects(
     {
       listProjects: buildListPlaneProjects({
-        ProjectsDB: buildProjectsDB({
-          model: prodModels[ModelNames.Project]
-        })
+        ProjectsDB
       })
     }
   )));
   router.get("/all", buildExpressCallback(buildGetProjects(
     {
       listProjects: buildListProjects({
-        ProjectsDB: buildProjectsDB({
-          model: prodModels[ModelNames.Project]
-        })
+        ProjectsDB
       })
     }
   )));
