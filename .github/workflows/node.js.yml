@@ -31,5 +31,5 @@ jobs:
 
     - uses: gaelgirodon/ci-badges-action@v1
       with:
-        gist-id: 412efe010b384f85ef5835105d180cb2
+        gist-id: ${{ env.GIST_ID}}
         token: ${{ secrets.GIST_TOKEN }}
