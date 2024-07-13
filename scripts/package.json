@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "nodemon --exec node --loader ts-node/esm ./push-shared.ts",
+    "start": "nodemon --exec node --loader ts-node/esm ./push-shared.ts"
   },
   "dependencies": {
     "chalk": "^4.1.0",
