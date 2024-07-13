@@ -3,7 +3,7 @@ import { DB } from '../db/config/db.config';
 import { buildAllModels } from '../db/model/buildAllModels';
 import { IProjectsDB } from '../data-access/project';
 import { ProjectAttributes } from '../db/model/project';
-import { ProjectForCreation } from '../../shared-types/project.output.types';
+import { ProjectForCreation } from '../../shared/types/project.output.types';
 
 describe('Project Data Access', () => {
   let db: DB;

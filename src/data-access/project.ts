@@ -1,9 +1,9 @@
-import { PlaneProjectList, ProjectForCreation, ProjectList } from "../../shared-types/project.output.types";
+import { PlaneProjectList, ProjectForCreation, ReachProjectList } from "../../shared/types/project.output.types";
 import { modelToPlainList } from "../data-mappers/model-to-plain-list";
 import { ProjectModelType } from "../db/model/buildAllModels";
 
 export interface IProjectsDB {
-  findAll: () => Promise<ProjectList>;
+  findAll: () => Promise<ReachProjectList>;
   findAllPlane: () => Promise<PlaneProjectList>;
   findById: (id: string) => Promise<any | null>;
   create: (data: ProjectForCreation) => Promise<any>;

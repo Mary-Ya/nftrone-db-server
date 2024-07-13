@@ -5,31 +5,53 @@ import { buildListPlaneProjects, buildListProjects } from "../services/projects"
 import { buildGetPlainProjects } from "../controllers/projects/getPlainProjects";
 import { buildProjectsDB } from "../data-access/project";
 import { buildGetProjects } from '../controllers/projects/getAllProjects';
+import { projectEndpoints } from '../../shared/endpoints/project';
 
 
 const getProjectRouter = (prodModels: ModelsType) => {
-
   const router = Router();
 
   const ProjectsDB = buildProjectsDB({
     model: prodModels[ModelNames.Project]
   });
 
-  router.get("/plain/all", buildExpressCallback(buildGetPlainProjects(
+  router.get(projectEndpoints.get.allPlain, buildExpressCallback(buildGetPlainProjects(
     {
       listProjects: buildListPlaneProjects({
         ProjectsDB
       })
     }
   )));
-  router.get("/all", buildExpressCallback(buildGetProjects(
+  router.get(projectEndpoints.get.all, buildExpressCallback(buildGetProjects(
     {
       listProjects: buildListProjects({
         ProjectsDB
       })
     }
   )));
-  // router.post("/", buildExpressCallback(createProject));
+
+  router.post(projectEndpoints.post.create, (req, res) => {
+    const { name, canvas_height, canvas_width, background_color } = req.body;
+
+    const newProject = prodModels.Project.build({
+      name,
+      canvas_height,
+      canvas_width,
+      background_color
+    });
+    console.log(newProject);
+    newProject.validate().then(() => {
+
+      console.log('Project is valid');
+      newProject.save().then(() => {
+        res.send('Project created');
+      }).catch((err: Error) => {
+        res.send(err);
+      });
+    }).catch((err: Error) => {
+      console.log(err);
+    });
+  });
 
   return router;
 }

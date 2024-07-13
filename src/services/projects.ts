@@ -1,5 +1,5 @@
 
-import { PlaneProject, PlaneProjectList, ProjectList } from '../../shared-types/project.output.types';
+import { PlaneProjectList, ReachProjectList } from '../../shared/types/project.output.types';
 import { IProjectsDB } from '../data-access/project';
 
 export type IListProjects<T> = () => Promise<T>;
@@ -8,7 +8,7 @@ export const buildListProjects = ({
   ProjectsDB,
 }: {
   ProjectsDB: IProjectsDB;
-}): IListProjects<ProjectList> => {
+}): IListProjects<ReachProjectList> => {
   return async () => {
     return await ProjectsDB.findAll();
   };

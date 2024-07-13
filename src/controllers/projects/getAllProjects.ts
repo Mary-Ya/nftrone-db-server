@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import { IControllerResponse } from '../controllers.types';
 import { IListProjects } from '../../services/projects';
-import { ReachProjectList } from '../../../shared-types/project.output.types';
+import { ReachProjectList } from '../../../shared/types/project.output.types';
 
 export const buildGetProjects = ({ listProjects }: { listProjects: IListProjects<ReachProjectList> }) => {
   return async (
