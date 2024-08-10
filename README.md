@@ -45,3 +45,16 @@ On the initial load db will be created.
 ## Testing
 Run `npm run test` or `yarn run test` for tests.
 
+## Shared dir
+NFTRone project's shared dir is a way to sync Typescript types between Backend part (this repo) and [Frontend](will_add_link_later). 
+To push Types from here to top level project:
+
+```bash
+yarn run push-shared-types
+```
+
+To pull it from Frontend: 
+```bash
+cd ../your-frontend-dir
+yarn run pull-shared-types
+```
