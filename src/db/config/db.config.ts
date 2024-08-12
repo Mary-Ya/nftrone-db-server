@@ -22,7 +22,7 @@ export class DB {
       console.log('Connection has been established successfully.');
 
       await DB.instance.sync({
-        force: true
+        // force: true
       });
       console.log('Database and tables synced!');
     } catch (error) {

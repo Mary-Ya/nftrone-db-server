@@ -1,8 +1,11 @@
 
-import { PlaneProjectList, ReachProjectList } from '../../shared/types/project.types';
+import { PlaneProjectList, ReachProject, ReachProjectList } from '../../shared/types/project.types';
 import { IProjectsDB } from '../data-access/project';
+import { Request as ExpressRequest } from 'express';
+import { IHttpRequest } from '../helpers/express-callback';
 
 export type IListProjects<T> = () => Promise<T>;
+export type IOneProject<T> = (request: ExpressRequest<IHttpRequest>) => Promise<T>;
 
 export const buildListProjects = ({
   ProjectsDB,
@@ -24,16 +27,16 @@ export const buildListPlaneProjects = ({
   };
 };
 
-// export const buildGetProject = ({
-//   ProjectsDB,
-// }: {
-//   ProjectsDB: IProjectsDB;
-// }): IListProjects => {
-//   return async (request: Request) => {
-//     const data = await request?.json();
-//     return ProjectsDB.findById(data.id);
-//   };
-// };
+export const buildGetProject = ({
+  ProjectsDB,
+}: {
+  ProjectsDB: IProjectsDB;
+}): IOneProject<ReachProject> => {
+  return async (request: IHttpRequest) => {
+    console.log('request buildGetProject', request.params?.id);
+    return await ProjectsDB.findById(request.params?.id);
+  };
+};
 
 // export const buildCreateProject = ({
 //   ProjectsDB,

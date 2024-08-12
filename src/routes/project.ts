@@ -1,12 +1,12 @@
 import { ModelNames, ModelsType } from '../db/model/buildAllModels';
 import { Router } from "express";
 import { buildExpressCallback } from "../helpers/express-callback";
-import { buildListPlaneProjects, buildListProjects } from "../services/projects";
+import { buildGetProject, buildListPlaneProjects, buildListProjects } from "../services/projects";
 import { buildGetPlainProjects } from "../controllers/projects/getPlainProjects";
 import { buildProjectsDB } from "../data-access/project";
 import { buildGetProjects } from '../controllers/projects/getAllProjects';
 import { projectEndpoints } from '../../shared/endpoints/project';
-import bodyParser from 'body-parser';
+import { buildGetOneProject } from '../controllers/projects/getProject';
 
 
 const getProjectRouter = (prodModels: ModelsType) => {
@@ -26,6 +26,14 @@ const getProjectRouter = (prodModels: ModelsType) => {
   router.get(projectEndpoints.get.all, buildExpressCallback(buildGetProjects(
     {
       listProjects: buildListProjects({
+        ProjectsDB
+      })
+    }
+  )));
+
+  router.get(projectEndpoints.get.byId, buildExpressCallback(buildGetOneProject(
+    {
+      getProject: buildGetProject({
         ProjectsDB
       })
     }

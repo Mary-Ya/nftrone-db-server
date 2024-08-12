@@ -1,18 +1,23 @@
 import { OK } from 'http-status-codes';
 import { IHttpRequest } from "../../helpers/express-callback";
-import { IControllerResponse } from '../controllers.types';
+import { Controller, IControllerResponse } from '../controllers.types';
+import { IOneProject } from '../../services/projects';
+import { ReachProject } from '../../../shared/types/project.types';
+import { Request as ExpressRequest } from 'express';
 
 
-export const buildGetOneProject = ({ listProjects }: { listProjects: IListProjects }) => {
+export const buildGetOneProject = ({ getProject }: { getProject: IOneProject<ReachProject> }): Controller => {
   return async (
     request: Partial<IHttpRequest>,
   ): Promise<IControllerResponse> => {
-    const Projects = await listProjects();
+    const project = await getProject(request as any);
 
-    return {
+    return Promise.resolve({
       success: true,
       statusCode: OK,
-      body: Projects,
-    };
+      body: {
+        project,
+      },
+    });
   };
 };

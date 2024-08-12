@@ -1,5 +1,6 @@
 import { Optional } from "sequelize";
 import { IHttpRequest } from "../helpers/express-callback";
+import { Request as ExpressRequest } from 'express';
 
 export interface IControllerResponse {
   success: boolean;

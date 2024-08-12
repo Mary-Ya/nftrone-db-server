@@ -1,11 +1,12 @@
-import { PlaneProjectList, ProjectForCreation, ReachProjectList } from "../../shared/types/project.types";
+import { PlaneProjectList, ProjectForCreation, ReachProject, ReachProjectList } from "../../shared/types/project.types";
 import { modelToPlainList } from "../data-mappers/model-to-plain-list";
 import { ProjectModelType } from "../db/model/buildAllModels";
+import { IOneProject } from "../services/projects";
 
 export interface IProjectsDB {
   findAll: () => Promise<ReachProjectList>;
   findAllPlane: () => Promise<PlaneProjectList>;
-  findById: (id: string) => Promise<any | null>;
+  findById: (id: string) => Promise<IOneProject<ReachProject>>;
   create: (data: ProjectForCreation) => Promise<any>;
 }
 
@@ -28,7 +29,9 @@ export const buildProjectsDB = ({
   }
 
   const findById = async (id: string) => {
-    return model.findOne({ where: { id }, plain: true });
+    console.log('findById', id);
+    const proj = await model.findOne({ where: { id } })
+    return await proj?.toJSON();
   }
 
   const create = async (data: ProjectForCreation) => {

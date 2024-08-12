@@ -11,7 +11,7 @@ describe('Project Data Access', () => {
   let projectsDB: IProjectsDB;
 
   const projectData: ProjectAttributes = {
-    name: 'My Project',
+    name: 'My Test Project',
     canvas_width: 1000,
     canvas_height: 1000,
     background_color: '#ffffff', // Optional for tests that don't need it

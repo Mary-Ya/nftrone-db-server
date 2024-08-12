@@ -5,11 +5,12 @@ import { ClientError } from "./../errors/client-error";
 import { logger } from "./logger";
 import { Controller, IControllerResponse } from "../controllers/controllers.types";
 import { DEFAULT_ERROR_MESSAGE } from "../errors/error.messages";
+import { Request as ExpressRequest } from 'express';
 
 export interface IHttpRequest {
   body: Request["body"];
   query: Request["query"];
-  params: Request["params"];
+  params: any // Request["params"];
 }
 
 export const buildExpressCallback = (controller: Controller) => {
