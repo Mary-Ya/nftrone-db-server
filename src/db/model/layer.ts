@@ -1,17 +1,5 @@
-import { DataTypes as SeqDataTypes, Model, Sequelize } from "sequelize";
+import { Model } from "sequelize";
 import { ModelGetter } from "./models.types";
-
-interface LayerAttributes {
-  privateId?: number;
-  id?: string;
-  name: string;
-  x: number;
-  y: number;
-  canvas_width: number;
-  canvas_height: number;
-  order: number; // layers order number in the project
-  projectID: string;
-}
 
 const getLayersModel: ModelGetter = (sequelize, DataTypes) => {
 
@@ -72,4 +60,4 @@ const getLayersModel: ModelGetter = (sequelize, DataTypes) => {
   return Layer;
 }
 
-export { getLayersModel, LayerAttributes }
+export { getLayersModel };

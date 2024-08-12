@@ -1,5 +1,5 @@
 
-  import { PlaneProjectList, ReachProjectList } from '../../shared/types/project.output.types';
+import { PlaneProjectList, ReachProjectList } from '../../shared/types/project.types';
 import { IProjectsDB } from '../data-access/project';
 
 export type IListProjects<T> = () => Promise<T>;

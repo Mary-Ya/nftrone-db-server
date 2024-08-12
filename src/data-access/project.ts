@@ -1,4 +1,4 @@
-import { PlaneProjectList, ProjectForCreation, ReachProjectList } from "../../shared/types/project.output.types";
+import { PlaneProjectList, ProjectForCreation, ReachProjectList } from "../../shared/types/project.types";
 import { modelToPlainList } from "../data-mappers/model-to-plain-list";
 import { ProjectModelType } from "../db/model/buildAllModels";
 
@@ -32,8 +32,6 @@ export const buildProjectsDB = ({
   }
 
   const create = async (data: ProjectForCreation) => {
-    // TBD: add layers to the project
-
     return model.create(data);
   };
 

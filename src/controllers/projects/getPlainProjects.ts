@@ -1,5 +1,5 @@
 import { Controller } from '../controllers.types';
-import { PlaneProjectList } from '../../../shared/types/project.output.types';
+import { PlaneProjectList } from '../../../shared/types/project.types';
 import { IListProjects } from '../../services/projects';
 import { StatusCodes } from "http-status-codes";
 

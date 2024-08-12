@@ -1,15 +1,5 @@
 import { Model } from "sequelize";
-import { LayerAttributes } from "./layer";
 import { ModelGetter } from "./models.types";
-
-export interface ProjectAttributes {
-  id?: string;
-  name: string;
-  canvas_height?: number;
-  canvas_width?: number;
-  background_color?: string;
-  layers?: LayerAttributes[];
-}
 
 
 export const getProjectsModel: ModelGetter = (sequelize, DataTypes, options) => {

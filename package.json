@@ -7,13 +7,16 @@
     "test": "jest --coverage --watch",
     "test-once": "jest --coverage",
     "start": "ts-node-dev src/server.ts",
-    "push-shared-types": "cp -r ./shared ../"
+    "push-shared-types": "rm -rf ../shared && cp -r ./shared ../"
   },
   "repository": "git@github.com:Mary-Ya/nftrone-db-server.git",
   "author": "maryya",
   "license": "none",
   "private": true,
   "dependencies": {
+    "@types/cors": "^2.8.17",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
     "express": "^4.19.2",
     "http-status-codes": "^2.3.0",
     "jest": "^29.7.0",

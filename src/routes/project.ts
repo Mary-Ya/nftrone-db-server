@@ -6,6 +6,7 @@ import { buildGetPlainProjects } from "../controllers/projects/getPlainProjects"
 import { buildProjectsDB } from "../data-access/project";
 import { buildGetProjects } from '../controllers/projects/getAllProjects';
 import { projectEndpoints } from '../../shared/endpoints/project';
+import bodyParser from 'body-parser';
 
 
 const getProjectRouter = (prodModels: ModelsType) => {
@@ -32,7 +33,6 @@ const getProjectRouter = (prodModels: ModelsType) => {
 
   router.post(projectEndpoints.post.create, (req, res) => {
     const { name, canvas_height, canvas_width, background_color } = req.body;
-
     const newProject = prodModels.Project.build({
       name,
       canvas_height,
@@ -44,12 +44,15 @@ const getProjectRouter = (prodModels: ModelsType) => {
 
       console.log('Project is valid');
       newProject.save().then(() => {
-        res.send('Project created');
+        res.send({
+          message: 'Project created successfully',
+          project: newProject
+        });
       }).catch((err: Error) => {
         res.send(err);
       });
     }).catch((err: Error) => {
-      console.log(err);
+      res.send(err);
     });
   });
 

@@ -1,6 +1,17 @@
-import { ProjectAttributes } from "../src/db/model/project";
-import { SafeModelAttributes } from "./types/0common.types";
+import { LayerAttributes } from "./layer.types";
+import { SafeModelAttributes } from "./0common.types";
 
+export interface ProjectAttributes {
+  id?: string;
+  name: string;
+  canvas_height?: number;
+  canvas_width?: number;
+  background_color?: string;
+  layers?: LayerAttributes[];
+}
+
+
+// output types ->
 export type ReachProject = SafeModelAttributes<ProjectAttributes>;
 export type ReachProjectList = ReachProject[];
 
