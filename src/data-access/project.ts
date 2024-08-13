@@ -18,8 +18,7 @@ export const buildProjectsDB = ({
   const findAll = async () => {
     const projects = await model.findAll();
     return projects.map((project) => {
-      const p = project.toJSON();
-      return p;
+      return project.toJSON();
     });
   };
 
@@ -30,7 +29,7 @@ export const buildProjectsDB = ({
 
   const findById = async (id: string) => {
     console.log('findById', id);
-    const proj = await model.findOne({ where: { id } })
+    const proj = await model.findOne({ where: { id }, include: 'layers' });
     return await proj?.toJSON();
   }
 
