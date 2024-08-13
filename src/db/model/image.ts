@@ -1,18 +1,6 @@
 import { Model } from "sequelize";
 import { ModelGetter } from "./models.types";
 
-interface ImageAttributes {
-  privateId?: number;
-  id?: string;
-  name: string;
-  metadata?: string;
-  x?: number;
-  y?: number;
-  width?: number;
-  height?: number;
-  layerID: string;
-}
-
 const getImagesModel: ModelGetter = (sequelize, DataTypes) => {
   class Image extends Model { }
 
@@ -40,10 +28,12 @@ const getImagesModel: ModelGetter = (sequelize, DataTypes) => {
     x: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     },
     y: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     },
     width: {
       type: DataTypes.INTEGER,
@@ -67,4 +57,4 @@ const getImagesModel: ModelGetter = (sequelize, DataTypes) => {
   return Image;
 }
 
-export { getImagesModel, ImageAttributes }
+export { getImagesModel };

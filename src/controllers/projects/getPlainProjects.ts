@@ -1,22 +1,20 @@
 import { Controller } from '../controllers.types';
-import { PlaneProjectList } from '../../../shared/types/project.types';
+import { PlainProjectListBody, PlaneProjectList } from '../../../shared/types/project.types';
 import { IListProjects } from '../../services/projects';
 import { StatusCodes } from "http-status-codes";
 
 
-export const buildGetPlainProjects = ({ listProjects }: { listProjects: IListProjects<PlaneProjectList> }): Controller => {
+export const buildGetPlainProjects = ({ listPlainProjects }: { listPlainProjects: IListProjects<PlaneProjectList> }): Controller => {
   return async (
     // request,
   ) => {
-    const projects = await listProjects();
+    const projects = await listPlainProjects();
     return Promise.resolve({
       success: true,
       statusCode: StatusCodes.OK,
       body: {
-        listProjects: {
-          projects,
-        }
-      }
+        listPlainProjects: { projects }
+      } satisfies PlainProjectListBody
     });
   };
 };

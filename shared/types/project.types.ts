@@ -14,9 +14,24 @@ export interface ProjectAttributes {
 // output types ->
 export type ReachProject = SafeModelAttributes<ProjectAttributes>;
 export type ReachProjectList = ReachProject[];
+export type ReachProjectBody = {
+  project: ReachProject;
+}
 
 export type PlaneProject = Omit<ReachProject, "layers">;
 export type PlaneProjectList = PlaneProject[];
-export type ProjectList = ReachProject[];
 
+export type PlainProjectListBody = {
+  listPlainProjects: {
+    // projects are wrapped to add metadata later
+    projects: PlaneProjectList;
+  };
+}
+
+export type ProjectListBody = {
+  listProjects: {
+    // projects are wrapped to add metadata later
+    projects: ReachProjectList;
+  }
+}
 export type ProjectForCreation = Omit<ReachProject, "id" | "layers">;

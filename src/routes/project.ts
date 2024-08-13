@@ -13,12 +13,13 @@ const getProjectRouter = (prodModels: ModelsType) => {
   const router = Router();
 
   const ProjectsDB = buildProjectsDB({
-    model: prodModels[ModelNames.Project]
+    model: prodModels[ModelNames.Project],
+    layersModel: prodModels[ModelNames.Layer]
   });
 
   router.get(projectEndpoints.get.allPlain, buildExpressCallback(buildGetPlainProjects(
     {
-      listProjects: buildListPlaneProjects({
+      listPlainProjects: buildListPlaneProjects({
         ProjectsDB
       })
     }

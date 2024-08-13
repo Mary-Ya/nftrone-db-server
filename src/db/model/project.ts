@@ -44,7 +44,7 @@ export const getProjectsModel: ModelGetter = (sequelize, DataTypes, options) => 
     defaultScope: {
       ...options?.defaultScope,
       attributes: {
-        exclude: [...options?.defaultScope?.attributes?.exclude, "createdAt", "updatedAt"]
+        exclude: [...options?.defaultScope?.attributes?.exclude, "createdAt", "updatedAt"],
       },
     },
     scopes: {

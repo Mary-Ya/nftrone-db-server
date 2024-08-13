@@ -1,15 +1,15 @@
 import { Model } from "sequelize";
 import { ModelGetter } from "./models.types";
 
-const getLayersModel: ModelGetter = (sequelize, DataTypes) => {
-
+const getLayersModel: ModelGetter = (sequelize, DataTypes, options) => {
   class Layer extends Model { }
 
   Layer.init({
     privateId: {
       type: DataTypes.INTEGER,
-      defaultValue: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
+      unique: true,
     },
     id: {
       type: DataTypes.UUID,
@@ -20,34 +20,24 @@ const getLayersModel: ModelGetter = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-
-    // position of the layer on the canvas
     x: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      defaultValue: 0,
     },
     y: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      defaultValue: 0,
     },
-
-    // size of the canvas
-    canvasWidth: {
+    canvas_width: {
       type: DataTypes.INTEGER,
-      allowNull: false,
     },
-    canvasHeight: {
+    canvas_height: {
       type: DataTypes.INTEGER,
-      allowNull: false,
     },
-
-    // the order number of the layer in the project
     order: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      defaultValue: 0,
     },
-
-    // project id that this layer belongs to
     projectID: {
       type: DataTypes.UUID,
       allowNull: false,
@@ -55,9 +45,16 @@ const getLayersModel: ModelGetter = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'layer',
+    defaultScope: {
+      ...options?.defaultScope,
+      attributes: {
+        exclude: [...(options?.defaultScope?.attributes?.exclude || []), "createdAt", "updatedAt"]
+      },
+    },
+    ...options
   });
 
   return Layer;
-}
+};
 
 export { getLayersModel };
