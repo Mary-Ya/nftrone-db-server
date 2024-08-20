@@ -1,14 +1,15 @@
 import { Model } from "sequelize";
 import { ModelGetter } from "./models.types";
 
-const getImagesModel: ModelGetter = (sequelize, DataTypes) => {
+const getImagesModel: ModelGetter = (sequelize, DataTypes, options) => {
   class Image extends Model { }
 
   Image.init({
     privateId: {
       type: DataTypes.INTEGER,
-      defaultValue: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
+      unique: true,
     },
     id: {
       type: DataTypes.UUID,
@@ -21,29 +22,28 @@ const getImagesModel: ModelGetter = (sequelize, DataTypes) => {
     },
     metadata: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
 
     // scale and position of the image on the canvas
     x: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       defaultValue: 0,
     },
     y: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       defaultValue: 0,
     },
     width: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     height: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
-
 
     layerID: {
       type: DataTypes.UUID,
@@ -52,6 +52,12 @@ const getImagesModel: ModelGetter = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'image',
+    defaultScope: {
+      ...options?.defaultScope,
+      attributes: {
+        exclude: [...(options?.defaultScope?.attributes?.exclude || []), "createdAt", "updatedAt"]
+      },
+    },
   });
 
   return Image;

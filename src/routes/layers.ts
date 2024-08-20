@@ -1,13 +1,8 @@
 import { ModelNames, ModelsType } from '../db/model/buildAllModels';
 import { Router } from "express";
-import { buildExpressCallback } from "../helpers/express-callback";
-import { buildGetProject, buildListPlaneProjects, buildListProjects } from "../services/projects";
-import { buildGetPlainProjects } from "../controllers/projects/getPlainProjects";
 import { buildProjectsDB } from "../data-access/project";
-import { buildGetProjects } from '../controllers/projects/getAllProjects';
-import { projectEndpoints } from '../../shared/endpoints/project';
-import { buildGetOneProject } from '../controllers/projects/getProject';
 import { layerEndpoints } from '../../shared/endpoints/layer';
+import { buildLayersDB } from '../data-access/layer';
 
 
 const getLayersRouter = (prodModels: ModelsType) => {
@@ -16,6 +11,37 @@ const getLayersRouter = (prodModels: ModelsType) => {
   const ProjectsDB = buildProjectsDB({
     model: prodModels[ModelNames.Project],
     layersModel: prodModels[ModelNames.Layer]
+  });
+  const LayersDB = buildLayersDB({
+    layersModel: prodModels[ModelNames.Layer],
+    imagesModel: prodModels[ModelNames.Image]
+  });
+
+  router.get(layerEndpoints.get.byId, async (req, res) => {
+    try {
+      const { id } = req.params;
+      console.log('Request params:', req.params);
+
+      const layer = await LayersDB.findById(id);
+      console.log('Layer found:', id, layer);
+
+      if (!layer) {
+        return res.status(404).send({ message: 'Layer not found' });
+      }
+
+      res.status(200).send({
+        body: {
+          message: 'Layer found',
+          layer
+        }
+      });
+    } catch (err) {
+      console.error('Error getting layer:', err);
+      res.status(500).send({
+        message: 'Error getting layer',
+        error: err
+      });
+    };
   });
 
   router.post(layerEndpoints.post.create, async (req, res) => {
@@ -30,6 +56,7 @@ const getLayersRouter = (prodModels: ModelsType) => {
         return res.status(404).send({ message: 'Project not found' });
       }
 
+      // TODO: use LayerDB instead of directly creating layer
       const newLayer = await prodModels[ModelNames.Layer].create({
         projectID: projectID,
         name,

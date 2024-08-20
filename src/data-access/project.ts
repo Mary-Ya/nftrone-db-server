@@ -34,6 +34,10 @@ export const buildProjectsDB = ({
       where: { id }
     }))?.toJSON();
 
+    if (!proj) {
+      return null;
+    }
+
     // TODO: make it work with the options instead of manually fetching layers
     // for some reason, this would only return the first layer
     // however, changing model as I do below seems potentially problematic

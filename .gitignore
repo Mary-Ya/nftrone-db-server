@@ -129,3 +129,4 @@ dist
 # sqlite database files
 *.sqlite
 .DS_Store
+uploads/*

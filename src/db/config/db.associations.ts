@@ -8,7 +8,7 @@ export const associations = (sequelize: Sequelize) => {
     foreignKey: 'projectID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    sourceKey: 'id', // Changed from 'privateId' to 'id'
+    sourceKey: 'id',
     as: 'layers',
   });
 
@@ -16,20 +16,22 @@ export const associations = (sequelize: Sequelize) => {
     foreignKey: 'projectID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    targetKey: 'id', // Changed from 'privateId' to 'id'
+    targetKey: 'id',
   });
 
   Layer.hasMany(Image, {
     foreignKey: 'layerID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+    sourceKey: 'id',
+    as: 'images',
   });
 
   Image.belongsTo(Layer, {
     foreignKey: 'layerID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    targetKey: 'privateId',
+    targetKey: 'id',
   });
 
   return { Project, Layer, Image };

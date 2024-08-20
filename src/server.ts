@@ -17,12 +17,14 @@ prodDb.start().then(() => {
   // this will only be used locally
   app.use(cors());
 
-  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json())
 
 
   const router = buildAllRoutes(prodModels);
   app.use(router);
+
+  app.use('/source-images', express.static('uploads'))
 
   app.listen(PORT, () => {
     console.log('Server is running on port ' + PORT);
