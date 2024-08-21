@@ -20,10 +20,10 @@ const getLayersRouter = (prodModels: ModelsType) => {
   router.get(layerEndpoints.get.byId, async (req, res) => {
     try {
       const { id } = req.params;
-      console.log('Request params:', req.params);
+      // console.log('Request params:', req.params);
 
       const layer = await LayersDB.findById(id);
-      console.log('Layer found:', id, layer);
+      // console.log('Layer found:', id, layer);
 
       if (!layer) {
         return res.status(404).send({ message: 'Layer not found' });

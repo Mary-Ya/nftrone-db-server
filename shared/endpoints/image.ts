@@ -3,4 +3,5 @@ export const imageEndpoints = {
   post: {
     create: '/',
   },
+  generate: '/generate/:projectID',
 };

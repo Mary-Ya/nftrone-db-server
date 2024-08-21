@@ -7,6 +7,7 @@ import mime from 'mime-types';
 import { ImagesToPost } from '../../shared/types/image.types';
 import { buildLayersDB } from '../data-access/layer';
 import { buildImagesDB } from '../data-access/image';
+import { buildProjectsDB } from '../data-access/project';
 
 const sourceImagesRoot = './uploads';
 
@@ -71,6 +72,11 @@ const upload = multer({ storage });
 const getImagesRouter = (prodModels: ModelsType) => {
   const router = Router();
 
+  const ProjectsDB = buildProjectsDB({
+    model: prodModels[ModelNames.Project],
+    layersModel: prodModels[ModelNames.Layer],
+  });
+
   const LayersDB = buildLayersDB({
     layersModel: prodModels[ModelNames.Layer],
     imagesModel: prodModels[ModelNames.Image]
@@ -87,7 +93,7 @@ const getImagesRouter = (prodModels: ModelsType) => {
     console.log('Request files:', req.files);
     console.log('Request body:', req.body);
 
-    LayersDB.findById(layerID).then((layer) => {
+    await LayersDB.findById(layerID).then((layer) => {
       console.log('Layer found:', layer);
 
       if (!layer) {
@@ -117,6 +123,66 @@ const getImagesRouter = (prodModels: ModelsType) => {
 
     });
   });
+
+  router.get(imageEndpoints.root + imageEndpoints.generate, async (req, res) => {
+    const { projectID } = req.params;
+    console.log('Request params:', req.params);
+
+    console.log('[DEBUG] Images:');
+    const project = await ProjectsDB.findById(projectID);
+    console.log('Project found:', project);
+    const layers = (project as any).layers;
+    if (!layers) {
+      return res.status(404).send({ message: 'Layers not found' });
+    }
+
+    const layerCount = layers.length;
+    let takenIndexes: boolean[] = [];
+
+    // for each layer, get image count. 
+    // if image count is more than 0, pick one randomly
+    // if image count is 0, skip.
+    // if image count is 0 for all layers, return error
+    const p = layers.map((layer: any) => {
+      let result: any[] = [];
+      takenIndexes = [];
+      return LayersDB.findById(layer.id).then((layer: any) => {
+        const imageCount = layer.images?.length;
+        if (imageCount > 0) {
+          let randomIndex = Math.floor(Math.random() * imageCount);
+          if (takenIndexes[randomIndex]) {
+            randomIndex = Math.floor(Math.random() * imageCount);
+            result[layer.order] = layer.images[randomIndex];
+          } else {
+            takenIndexes[randomIndex] = true;
+            result[layer.order] = layer.images[randomIndex];
+          }
+        }
+        console.log('Images found:', result);
+        return result;
+      });
+    });
+
+    console.log('[DEBUG] Images:');
+    const result = await Promise.all(p).then((result) => {
+      if (result.length === 0) {
+        return res.status(404).send({ message: 'Images not found' });
+      }
+      console.log('Images found:', result);
+      return result;
+    });
+
+    return res.status(200).send({
+      body: {
+        message: 'Layers found',
+        result: (result as any[]).map((r) => {
+          return r[0];
+        })
+      }
+    });
+
+  });
+
   return router;
 }
 
