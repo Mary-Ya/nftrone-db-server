@@ -3,7 +3,9 @@ import { PlaneProjectList, ProjectAttributes, ProjectForCreation, ReachProject, 
 import { modelToPlainList } from "../data-mappers/model-to-plain-list";
 import { LayerModelType, ProjectModelType } from "../db/model/buildAllModels";
 import { IOneEntry } from "../helpers/express-callback";
+import { logger } from "../helpers/logger";
 
+const logOnProjectDB = logger.getScopedLogger('PROJECTS_DB');
 export interface IProjectsDB {
   findAll: () => Promise<ReachProjectList>;
   findAllPlane: () => Promise<PlaneProjectList>;
@@ -37,7 +39,7 @@ export const buildProjectsDB = ({
     }))?.toJSON();
 
     if (!proj) {
-      console.log('[PROJECT]: No project found for this ID:', id);
+      logOnProjectDB(`Project with id ${id} not found`);
       return null;
     }
 

@@ -1,8 +1,11 @@
 import { Sequelize } from "sequelize";
 import { associations } from "./db.associations";
+import { logger } from "../../helpers/logger";
 
 export const DB_NAME = 'nftrone-local.sqlite';
 export const BD_ROOT = './db';
+
+const logOnDB = logger.getScopedLogger('DB');
 
 export class DB {
   private static instance: any;
@@ -19,14 +22,14 @@ export class DB {
     try {
       await DB.instance.authenticate();
       DB.models = associations(DB.instance);
-      console.log('[DB]: Connection has been established successfully.');
+      logOnDB('Connection has been established successfully.');
 
       await DB.instance.sync({
         force: test,
       });
-      console.log('[DB]: Database and tables synced!');
+      logOnDB('Database and tables synced!');
     } catch (error) {
-      console.error('[DB]: Unable to connect to the database:', error);
+      logOnDB('Unable to connect to the database: ', error);
     }
 
     return DB.instance;

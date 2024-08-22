@@ -7,8 +7,11 @@ import cors from "cors";
 import bodyParser from 'body-parser';
 import { buildLayersAssetsRouter } from './public-dirs/public-assets';
 import { imageEndpoints } from '../shared/endpoints/image';
+import { logger } from './helpers/logger';
 
 export let prodModels: ModelsType = {} as ModelsType;
+
+const logOnServer = logger.getScopedLogger('SERVER');
 
 const app = express();
 const prodDb = new DB(DB_NAME);
@@ -29,10 +32,10 @@ prodDb.start().then(() => {
   app.use(imageEndpoints.sources, buildLayersAssetsRouter())
 
   app.listen(PORT, () => {
-    console.log('[SERVER]: Server is running on port ' + PORT);
+    logOnServer(`Server is running on port ${PORT}`);
   });
 }).catch((err: Error) => {
-  console.log('[SERVER]: ', err);
+  logOnServer('Error starting server: ', err);
 });
 
 export { app };

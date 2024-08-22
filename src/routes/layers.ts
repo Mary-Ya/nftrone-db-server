@@ -3,6 +3,9 @@ import { Router } from "express";
 import { buildProjectsDB } from "../data-access/project";
 import { layerEndpoints } from '../../shared/endpoints/layer';
 import { buildLayersDB } from '../data-access/layer';
+import { buildExpressCallback } from '../helpers/express-callback';
+import { buildGetLayer } from '../services/layers';
+import { composeLayerDataFromDB } from '../controllers/layers/composeLayerDataFromDB';
 
 
 const getLayersRouter = (prodModels: ModelsType) => {
@@ -17,29 +20,13 @@ const getLayersRouter = (prodModels: ModelsType) => {
     imagesModel: prodModels[ModelNames.Image]
   });
 
-  router.get(layerEndpoints.get.byId, async (req, res) => {
-    try {
-      const { id } = req.params;
-      const layer = await LayersDB.findById(id);
-
-      if (!layer) {
-        return res.status(404).send({ message: 'Layer not found' });
-      }
-
-      res.status(200).send({
-        body: {
-          message: 'Layer found',
-          layer
-        }
-      });
-    } catch (err) {
-      console.error('Error getting layer:', err);
-      res.status(500).send({
-        message: 'Error getting layer',
-        error: err
-      });
-    };
-  });
+  router.get(layerEndpoints.get.byId, buildExpressCallback(
+    composeLayerDataFromDB({
+      getLayer: buildGetLayer({
+        LayersDB
+      })
+    })
+  ));
 
   router.post(layerEndpoints.post.create, async (req, res) => {
     try {

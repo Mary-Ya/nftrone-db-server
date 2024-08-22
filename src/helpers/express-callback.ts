@@ -30,7 +30,7 @@ export const buildExpressCallback = (controller: Controller) => {
         body: httpResponse.body,
       });
     } catch (error) {
-      logger.log(error);
+      logger.log(JSON.stringify(error));
 
       const errorMessage =
         error instanceof ClientError ? error.message : DEFAULT_ERROR_MESSAGE;

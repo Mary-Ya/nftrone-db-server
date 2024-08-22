@@ -1,13 +1,12 @@
 import { Model } from "sequelize";
 import { LayerAttributes, LayerForCreation } from "../../shared/types/layer.types";
 import { ImageModelType, LayerModelType } from "../db/model/buildAllModels";
-import { IOneEntry } from "../helpers/express-callback";
 
 export interface ILayersDB {
   // keep Model<> to be able to validate and react to validation at place of call
   create: (data: LayerForCreation) => Promise<Model<LayerAttributes>>;
 
-  findById: (id: string) => Promise<IOneEntry<LayerAttributes>>;
+  findById: (id: string) => Promise<LayerAttributes>;
 }
 
 export const buildLayersDB = ({
@@ -19,7 +18,7 @@ export const buildLayersDB = ({
 }): ILayersDB => {
 
   const findById = async (id: string) => {
-    const proj = (await layersModel.findOne({
+    const layer = (await layersModel.findOne({
       where: { id }
     }))?.toJSON();
 
@@ -27,9 +26,9 @@ export const buildLayersDB = ({
       where: { layerId: id }
     });
 
-    proj.images = images.map((image) => image.toJSON());
+    layer.images = images.map((image) => image.toJSON());
 
-    return proj;
+    return layer;
   }
 
   const create = async (data: LayerForCreation) => {

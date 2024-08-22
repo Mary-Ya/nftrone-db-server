@@ -9,8 +9,10 @@ import { buildLayersDB } from '../data-access/layer';
 import { buildImagesDB } from '../data-access/image';
 import { buildProjectsDB } from '../data-access/project';
 import { LayerAttributes } from "../../shared/types/layer.types";
+import { logger } from '../helpers/logger';
 
 const sourceImagesRoot = './uploads';
+const logOnImageRoute = logger.getScopedLogger('IMAGES_ROUTE');
 
 const getDirName = (projId: string, layerID: string) => {
   return getProjectName(projId) + '/' + layerID;
@@ -62,7 +64,7 @@ const storage = multer.diskStorage({
 
       cb(null, fullFileName + '.' + ext);
     } catch (err) {
-      console.error('Error creating layer:', err);
+      logOnImageRoute('Error creating layer:', err);
     }
   }
 })
@@ -91,11 +93,9 @@ const getImagesRouter = (prodModels: ModelsType) => {
   // TODO: Error handling
   router.post(imageEndpoints.root + imageEndpoints.post.create, upload.any(), async (req, res) => {
     const { projectID, layerID } = req.body as ImagesToPost;
-    console.log('Request files:', req.files);
-    console.log('Request body:', req.body);
 
     await LayersDB.findById(layerID).then((layer) => {
-      console.log('Layer found:', layer);
+      logOnImageRoute('Layer found: ', layer);
 
       if (!layer) {
         return res.send({ message: 'Layer not found' });
@@ -103,27 +103,23 @@ const getImagesRouter = (prodModels: ModelsType) => {
 
       const images = req.files as Express.Multer.File[];
       const imageSavers = images.map((image) => {
-        console.log('Image:', image);
+        logOnImageRoute('Image:', image);
         const img: ImageAttributes = {
           layerID: layerID,
           name: image.filename,
         }
-        // svgDim.get(image.path, function (_err: string, dimensions: { width: any; height: any; }) {
-        //   console.log(dimensions.width, dimensions.height);
-        //   img.width = dimensions.width;
-        //   img.height = dimensions.height;
-        // })
+
         return ImagesDB.create(img);
       });
 
       return Promise.all(imageSavers).then((images) => {
-        console.log('Images created:', images);
+        logOnImageRoute('Images created: ', images);
         return res.send({
           message: 'Images created successfully',
           images: images
         });
       }).catch((err) => {
-        console.error('Error creating layer:', err);
+        logOnImageRoute('Error creating images: ', err);
         return res.send({
           message: 'Error creating layer',
         });
@@ -133,13 +129,11 @@ const getImagesRouter = (prodModels: ModelsType) => {
   });
 
   const getRandomImage = (takenIndexes: boolean[]) => {
-    console.log('Taken indexes:', takenIndexes);
     if (!takenIndexes.find((i) => !i)) {
       return null;
     }
 
     let randomIndex = Math.floor(Math.random() * takenIndexes.length);
-    console.log('Random index:', randomIndex);
     if (takenIndexes[randomIndex]) {
       return getRandomImage(takenIndexes);
     }
@@ -153,30 +147,20 @@ const getImagesRouter = (prodModels: ModelsType) => {
 
   router.get(imageEndpoints.root + imageEndpoints.generate, async (req, res) => {
     const { projectID } = req.params;
-    console.log('Request params:', req.params);
+    logOnImageRoute('Generating combos for project:', projectID);
 
     const project = await ProjectsDB.findById(projectID);
-    console.log('Project found:', project);
+    logOnImageRoute('Project:', project);
+
     const layers = (project as any).layers as LayerAttributes[];
     if (!layers) {
       return res.status(404).send({ message: 'Layers not found' });
     }
-    console.log('Layers found:', layers.length);
+    logOnImageRoute('Layers: ', layers);
 
     const reachLayersLoader = layers.map((layer: any) => LayersDB.findById(layer.id));
 
     const reachLayers = await Promise.all(reachLayersLoader)
-
-    //   .then((layers) => {
-    //   console.log('Layers loaded:', layers);
-    //   return layers.filter((layer) => {
-    //     console.log('Layer:', layer);
-    //     const layerImages = (layer as any).images as any[];
-    //     layerImages && layerImages.length > 0;
-    //   });
-    // });
-
-    console.log('Reach layers:', reachLayers.length);
 
     if (reachLayers.length === 0) {
       return res.status(404).send({ message: 'No layers with images found' });
@@ -190,27 +174,24 @@ const getImagesRouter = (prodModels: ModelsType) => {
       return acc * ((reachLayers as any)[index].images as any[]).length
     }, 1);
 
-    console.log('Number of combos:', numCombos);
+    logOnImageRoute('Num combos: ', numCombos);
+
     const combos = new Set<string>();
-    const result: ImageAttributes[][] = [];
 
     while (combos.size < numCombos) {
       const combo = reachLayers.map((layer) => {
         const images = (layer as any).images as any[];
         const ind = randomIndex(images.length);
-        const image = images[ind];
-        console.log('Image:', image);
+
         return images ? ind : -1
       });
-      console.log('Combo:', combo);
+
       if (combo.every(index => index === -1)) {
-        console.log('No valid images found in any layer.');
         break;
       }
       const comboKey = combo.join(',');
       combos.add(comboKey);
     }
-    console.log('Combos:', combos);
 
     return res.status(200).send({
       body: {
@@ -221,7 +202,6 @@ const getImagesRouter = (prodModels: ModelsType) => {
         })),
       }
     });
-
   });
 
   return router;
