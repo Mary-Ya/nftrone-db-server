@@ -8,7 +8,9 @@ export interface IProjectsDB {
   findAll: () => Promise<ReachProjectList>;
   findAllPlane: () => Promise<PlaneProjectList>;
   findById: (id: string) => Promise<IOneEntry<ReachProject>>;
-  create: (data: ProjectForCreation) => Promise<ProjectAttributes>;
+
+  // keep Model<> to be able to validate and react to validation at place of call
+  create: (data: ProjectForCreation) => Promise<Model<ProjectAttributes>>;
 }
 
 export const buildProjectsDB = ({
@@ -60,7 +62,7 @@ export const buildProjectsDB = ({
   }
 
   const create = async (data: ProjectForCreation) => {
-    return (await model.create(data)).toJSON();
+    return model.create(data);
   };
 
   return {

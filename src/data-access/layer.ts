@@ -4,7 +4,9 @@ import { ImageModelType, LayerModelType } from "../db/model/buildAllModels";
 import { IOneEntry } from "../helpers/express-callback";
 
 export interface ILayersDB {
-  create: (data: LayerForCreation) => Promise<LayerAttributes>;
+  // keep Model<> to be able to validate and react to validation at place of call
+  create: (data: LayerForCreation) => Promise<Model<LayerAttributes>>;
+
   findById: (id: string) => Promise<IOneEntry<LayerAttributes>>;
 }
 
@@ -31,7 +33,7 @@ export const buildLayersDB = ({
   }
 
   const create = async (data: LayerForCreation) => {
-    return (await layersModel.create(data)).toJSON();
+    return layersModel.create(data);
   }
 
   return {

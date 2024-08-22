@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize';
 import { DB } from '../db/config/db.config';
 import { buildAllModels, ModelNames } from '../db/model/buildAllModels';
-import { ProjectAttributes, ProjectForCreation } from '../../shared/types/project.types';
+import { ProjectAttributes } from '../../shared/types/project.types';
 import { ILayersDB } from './layer';
 import { LayerAttributes, LayerForCreation } from '../../shared/types/layer.types';
 import { IProjectsDB } from './project';
@@ -39,11 +39,11 @@ describe('Layer Data Access', () => {
   };
 
   const createLayer = async (data: LayerForCreation) => {
-    const project = await projectsDB.create(projectData);
-    const layer = await layersDB.create({
+    const project = (await projectsDB.create(projectData)).toJSON();
+    const layer = (await layersDB.create({
       ...data,
       projectID: project.id!
-    });
+    })).toJSON();
     return {
       layer, project
     }
@@ -93,5 +93,4 @@ describe('Layer Data Access', () => {
       cleanCreatedLayer
     );
   });
-
 });

@@ -53,8 +53,7 @@ const getLayersRouter = (prodModels: ModelsType) => {
         return res.status(404).send({ message: 'Project not found' });
       }
 
-      // TODO: use LayerDB instead of directly creating layer
-      const newLayer = await prodModels[ModelNames.Layer].create({
+      const newLayer = await LayersDB.create({
         projectID: projectID,
         name,
         order: order || 0,
