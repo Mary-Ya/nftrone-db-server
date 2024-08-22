@@ -1,10 +1,11 @@
-import { LayerAttributes } from "../../shared/types/layer.types";
-import { ReachProject } from "../../shared/types/project.types";
+import { Model } from "sequelize";
+import { LayerAttributes, LayerForCreation } from "../../shared/types/layer.types";
 import { ImageModelType, LayerModelType } from "../db/model/buildAllModels";
-import { IOneProject } from "../services/projects";
+import { IOneEntry } from "../helpers/express-callback";
 
 export interface ILayersDB {
-  findById: (id: string) => Promise<IOneProject<LayerAttributes>>;
+  create: (data: LayerForCreation) => Promise<LayerAttributes>;
+  findById: (id: string) => Promise<IOneEntry<LayerAttributes>>;
 }
 
 export const buildLayersDB = ({
@@ -29,7 +30,12 @@ export const buildLayersDB = ({
     return proj;
   }
 
+  const create = async (data: LayerForCreation) => {
+    return (await layersModel.create(data)).toJSON();
+  }
+
   return {
     findById,
+    create
   };
 };

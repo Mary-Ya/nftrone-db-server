@@ -15,14 +15,14 @@ export class DB {
     });
   }
 
-  public async start() {
+  public async start(test = false) {
     try {
       await DB.instance.authenticate();
       DB.models = associations(DB.instance);
       console.log('[DB]: Connection has been established successfully.');
 
       await DB.instance.sync({
-        // force: true
+        force: test,
       });
       console.log('[DB]: Database and tables synced!');
     } catch (error) {

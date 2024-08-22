@@ -1,13 +1,14 @@
-import { PlaneProjectList, ProjectForCreation, ReachProject, ReachProjectList } from "../../shared/types/project.types";
+import { Model } from "sequelize";
+import { PlaneProjectList, ProjectAttributes, ProjectForCreation, ReachProject, ReachProjectList } from "../../shared/types/project.types";
 import { modelToPlainList } from "../data-mappers/model-to-plain-list";
 import { LayerModelType, ProjectModelType } from "../db/model/buildAllModels";
-import { IOneProject } from "../services/projects";
+import { IOneEntry } from "../helpers/express-callback";
 
 export interface IProjectsDB {
   findAll: () => Promise<ReachProjectList>;
   findAllPlane: () => Promise<PlaneProjectList>;
-  findById: (id: string) => Promise<IOneProject<ReachProject>>;
-  create: (data: ProjectForCreation) => Promise<any>;
+  findById: (id: string) => Promise<IOneEntry<ReachProject>>;
+  create: (data: ProjectForCreation) => Promise<ProjectAttributes>;
 }
 
 export const buildProjectsDB = ({
@@ -59,7 +60,7 @@ export const buildProjectsDB = ({
   }
 
   const create = async (data: ProjectForCreation) => {
-    return model.create(data);
+    return (await model.create(data)).toJSON();
   };
 
   return {

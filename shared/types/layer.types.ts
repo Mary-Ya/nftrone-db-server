@@ -12,3 +12,5 @@ export interface LayerAttributes {
   projectID: string;
   images?: ImageAttributes[];
 }
+
+export type LayerForCreation = Omit<LayerAttributes, "id" | "images">;

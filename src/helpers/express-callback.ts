@@ -7,6 +7,7 @@ import { Controller, IControllerResponse } from "../controllers/controllers.type
 import { DEFAULT_ERROR_MESSAGE } from "../errors/error.messages";
 import { Request as ExpressRequest } from 'express';
 
+export type IOneEntry<T> = (request: ExpressRequest<IHttpRequest>) => Promise<T>;
 export interface IHttpRequest {
   body: Request["body"];
   query: Request["query"];
