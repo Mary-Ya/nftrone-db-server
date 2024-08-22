@@ -1,7 +1,7 @@
 import { ModelNames, ModelsType } from '../db/model/buildAllModels';
 import { Router } from "express";
 import { buildExpressCallback } from "../helpers/express-callback";
-import { buildGetProject, buildListPlaneProjects, buildListProjects } from "../services/projects";
+import { buildCreateProject, buildGetProject, buildListPlaneProjects, buildListProjects } from "../services/projects";
 import { buildGetPlainProjects } from "../controllers/projects/getPlainProjects";
 import { buildProjectsDB } from "../data-access/project";
 import { buildGetProjects } from '../controllers/projects/getAllProjects';
@@ -40,32 +40,9 @@ const getProjectRouter = (prodModels: ModelsType) => {
     }
   )));
 
-  router.post(projectEndpoints.post.create, (req, res) => {
-    const { name, canvas_height, canvas_width, background_color } = req.body;
-    const newProject = prodModels.Project.build({
-      name,
-      canvas_height,
-      canvas_width,
-      background_color
-    });
-    console.log('[PROJECT]: New project: ', newProject);
-    newProject.validate().then(() => {
-
-      console.log('[PROJECT]: Project is valid');
-      newProject.save().then(() => {
-        res.send({
-          message: 'Project created successfully',
-          project: newProject
-        });
-      }).catch((err: Error) => {
-        console.log('[PROJECT]: Error creating project: ', err);
-        res.send(err);
-      });
-    }).catch((err: Error) => {
-      console.log('[PROJECT]: Error validating project: ', err);
-      res.send(err);
-    });
-  });
+  router.post(projectEndpoints.post.create, buildExpressCallback(buildCreateProject({
+    ProjectsDB
+  })));
 
   return router;
 }

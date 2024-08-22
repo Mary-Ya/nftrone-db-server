@@ -5,6 +5,8 @@ import { ModelsType } from './db/model/buildAllModels';
 import { PORT } from '../shared/endpoints/0common';
 import cors from "cors";
 import bodyParser from 'body-parser';
+import { buildLayersAssetsRouter } from './public-dirs/public-assets';
+import { imageEndpoints } from '../shared/endpoints/image';
 
 export let prodModels: ModelsType = {} as ModelsType;
 
@@ -24,7 +26,7 @@ prodDb.start().then(() => {
   const router = buildAllRoutes(prodModels);
   app.use(router);
 
-  app.use('/source-images', express.static('uploads'))
+  app.use(imageEndpoints.sources, buildLayersAssetsRouter())
 
   app.listen(PORT, () => {
     console.log('[SERVER]: Server is running on port ' + PORT);

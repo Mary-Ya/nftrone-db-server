@@ -1,10 +1,11 @@
 import { Sequelize } from 'sequelize';
 import { DB } from '../db/config/db.config';
 import { buildAllModels, ModelNames } from '../db/model/buildAllModels';
-import { ProjectAttributes } from '../../shared/types/project.types';
 import { ILayersDB } from './layer';
-import { LayerAttributes, LayerForCreation } from '../../shared/types/layer.types';
+import { LayerForCreation } from '../../shared/types/layer.types';
 import { IProjectsDB } from './project';
+import { testProjectData } from '../test/data/testProject';
+import { testLayerData } from '../test/data/testLayer';
 
 describe('Layer Data Access', () => {
   let db: DB;
@@ -13,33 +14,8 @@ describe('Layer Data Access', () => {
   let layersDB: ILayersDB;
   let projectsDB: IProjectsDB;
 
-  const projectData: ProjectAttributes = {
-    name: 'My Test Project',
-    canvas_width: 1000,
-    canvas_height: 1000,
-    background_color: '#ffffff', // Optional for tests that don't need it
-    layers: [{ // Optional for tests that don't need it
-      name: 'Layer 1',
-      x: 0,
-      y: 0,
-      canvas_width: 0,
-      canvas_height: 0,
-      order: 0,
-      projectID: ''
-    }]
-  };
-
-  const layerData: LayerAttributes = {
-    name: 'My Test Project',
-    canvas_width: 1000,
-    canvas_height: 1000,
-    projectID: '1',
-    order: 0,
-    images: []
-  };
-
   const createLayer = async (data: LayerForCreation) => {
-    const project = (await projectsDB.create(projectData)).toJSON();
+    const project = (await projectsDB.create(testProjectData)).toJSON();
     const layer = (await layersDB.create({
       ...data,
       projectID: project.id!
@@ -79,9 +55,9 @@ describe('Layer Data Access', () => {
   };
 
   it('should create from minimal data and find by ID', async () => {
-    const { layer: createdLayer, project: createdProject } = await createLayer(layerData);
+    const { layer: createdLayer, project: createdProject } = await createLayer(testLayerData);
 
-    const cleanInitialData = cleanLayerObject(layerData);
+    const cleanInitialData = cleanLayerObject(testLayerData);
     const cleanCreatedLayer = cleanLayerObject(createdLayer);
 
     expect({

@@ -74,8 +74,7 @@ const getLayersRouter = (prodModels: ModelsType) => {
             message: 'Error creating layer',
             error: err
           });
-        }
-        )
+        })
       }).catch((err) => {
         console.error('Error creating layer:', err);
         res.status(500).send({
@@ -93,6 +92,5 @@ const getLayersRouter = (prodModels: ModelsType) => {
   });
   return router;
 }
-
 
 export { getLayersRouter };

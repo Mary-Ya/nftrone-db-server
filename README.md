@@ -58,3 +58,11 @@ To pull it from Frontend:
 cd ../your-frontend-dir
 yarn run pull-shared-types
 ```
+
+## Uploads dir
+This dir contains are accessible on `/source-images`
+It contains assets user is uploading to their project.
+Dirs structure:
+```
+projectId -> layerId -> filename(+ hash if filename is already taken)
+```

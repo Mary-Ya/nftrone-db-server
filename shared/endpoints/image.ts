@@ -4,4 +4,5 @@ export const imageEndpoints = {
     create: '/',
   },
   generate: '/generate/:projectID',
+  sources: '/source-images',
 };

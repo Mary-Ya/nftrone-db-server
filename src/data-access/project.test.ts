@@ -2,7 +2,8 @@ import { Sequelize } from 'sequelize';
 import { DB } from '../db/config/db.config';
 import { buildAllModels } from '../db/model/buildAllModels';
 import { IProjectsDB } from '../data-access/project';
-import { ProjectAttributes, ProjectForCreation } from '../../shared/types/project.types';
+import { ProjectForCreation } from '../../shared/types/project.types';
+import { testProjectData, testCleanProjectData } from '../test/data/testProject';
 
 describe('Project Data Access', () => {
   let db: DB;
@@ -10,21 +11,6 @@ describe('Project Data Access', () => {
   let models: ReturnType<typeof buildAllModels>;
   let projectsDB: IProjectsDB;
 
-  const projectData: ProjectAttributes = {
-    name: 'My Test Project',
-    canvas_width: 1000,
-    canvas_height: 1000,
-    background_color: '#ffffff', // Optional for tests that don't need it
-    layers: [{ // Optional for tests that don't need it
-      name: 'Layer 1',
-      x: 0,
-      y: 0,
-      canvas_width: 0,
-      canvas_height: 0,
-      order: 0,
-      projectID: ''
-    }]
-  };
 
   const createProject = async (data: ProjectForCreation) => {
     return await projectsDB.create(data);
@@ -54,19 +40,15 @@ describe('Project Data Access', () => {
   });
 
   it('should create a new project', async () => {
-    const createdProject = await createProject(projectData);
+    const createdProject = await createProject(testProjectData);
     const cleanProject = cleanProjectObject(createdProject);
 
-
-    // TBD add layers to the project
-    const { layers, ...cleanProjectData } = projectData;
-
-    expect(cleanProject).toStrictEqual(cleanProjectData);
+    expect(cleanProject).toStrictEqual(testCleanProjectData);
   });
 
   it('should find all projects', async () => {
-    await createProject(projectData);
-    await createProject(projectData);
+    await createProject(testProjectData);
+    await createProject(testProjectData);
 
     const projects = await projectsDB.findAll();
 
@@ -74,10 +56,10 @@ describe('Project Data Access', () => {
   });
 
   it('should find all plane projects', async () => {
-    const { layers, ...planeProjectData } = projectData;
+    const { layers, ...planeProjectData } = testProjectData;
 
-    await createProject(projectData);
-    await createProject(projectData);
+    await createProject(testProjectData);
+    await createProject(testProjectData);
 
     const projects = await projectsDB.findAllPlane();
 
