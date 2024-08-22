@@ -1,9 +1,6 @@
-
-import { error } from 'console';
-import { PlaneProjectList, ProjectAttributes, ProjectForCreation, ReachProject, ReachProjectList } from '../../shared/types/project.types';
+import { PlaneProjectList, ReachProject, ReachProjectList } from '../../shared/types/project.types';
 import { IProjectsDB } from '../data-access/project';
 import { IHttpRequest, IOneEntry } from '../helpers/express-callback';
-import { Model } from 'sequelize';
 import { StatusCodes } from "http-status-codes";
 
 export type IListProjects<T> = () => Promise<T>;
@@ -55,9 +52,8 @@ export const buildCreateProject = ({
 
     if (!newProject) {
       return {
-        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-        success: false,
-        body: { error: 'Error creating project' }
+        code: StatusCodes.INTERNAL_SERVER_ERROR,
+        error: 'Error creating project'
       };
     }
 
@@ -65,8 +61,7 @@ export const buildCreateProject = ({
       console.log('[PROJECT]: Project is valid');
       return newProject.save().then(() => {
         return {
-          statusCode: StatusCodes.CREATED,
-          success: true,
+          code: StatusCodes.CREATED,
           body: {
             message: 'Project created successfully',
             project: newProject
@@ -75,17 +70,15 @@ export const buildCreateProject = ({
       }).catch((err: Error) => {
         console.log('[PROJECT]: Error creating project: ', err);
         return {
-          success: false,
-          statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-          body: { error: err.message }
+          code: StatusCodes.INTERNAL_SERVER_ERROR,
+          error: err.message
         }
       });
     }).catch((err: Error) => {
       console.log('[PROJECT]: Error validating project: ', err);
       return {
-        success: false,
-        statusCode: StatusCodes.BAD_REQUEST,
-        body: { error: err.message }
+        code: StatusCodes.BAD_REQUEST,
+        error: err.message
       }
     });
   };

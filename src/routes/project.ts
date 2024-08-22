@@ -7,6 +7,7 @@ import { buildProjectsDB } from "../data-access/project";
 import { buildGetProjects } from '../controllers/projects/getAllProjects';
 import { projectEndpoints } from '../../shared/endpoints/project';
 import { buildGetOneProject } from '../controllers/projects/getProject';
+import { buildCreateOneProject } from '../controllers/projects/getCreatedProject';
 
 
 const getProjectRouter = (prodModels: ModelsType) => {
@@ -40,8 +41,10 @@ const getProjectRouter = (prodModels: ModelsType) => {
     }
   )));
 
-  router.post(projectEndpoints.post.create, buildExpressCallback(buildCreateProject({
-    ProjectsDB
+  router.post(projectEndpoints.post.create, buildExpressCallback(buildCreateOneProject({
+    createProject: buildCreateProject({
+      ProjectsDB
+    })
   })));
 
   return router;
