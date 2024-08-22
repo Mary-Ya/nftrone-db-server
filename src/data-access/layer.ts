@@ -1,9 +1,10 @@
+import { LayerAttributes } from "../../shared/types/layer.types";
 import { ReachProject } from "../../shared/types/project.types";
 import { ImageModelType, LayerModelType } from "../db/model/buildAllModels";
 import { IOneProject } from "../services/projects";
 
 export interface ILayersDB {
-  findById: (id: string) => Promise<IOneProject<ReachProject>>;
+  findById: (id: string) => Promise<IOneProject<LayerAttributes>>;
 }
 
 export const buildLayersDB = ({

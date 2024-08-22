@@ -33,7 +33,6 @@ export const buildGetProject = ({
   ProjectsDB: IProjectsDB;
 }): IOneProject<ReachProject> => {
   return async (request: IHttpRequest) => {
-    console.log('request buildGetProject', request.params?.id);
     return await ProjectsDB.findById(request.params?.id);
   };
 };

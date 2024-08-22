@@ -19,14 +19,14 @@ export class DB {
     try {
       await DB.instance.authenticate();
       DB.models = associations(DB.instance);
-      console.log('Connection has been established successfully.');
+      console.log('[DB]: Connection has been established successfully.');
 
       await DB.instance.sync({
         // force: true
       });
-      console.log('Database and tables synced!');
+      console.log('[DB]: Database and tables synced!');
     } catch (error) {
-      console.error('Unable to connect to the database:', error);
+      console.error('[DB]: Unable to connect to the database:', error);
     }
 
     return DB.instance;

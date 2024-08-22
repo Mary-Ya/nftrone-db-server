@@ -27,10 +27,10 @@ prodDb.start().then(() => {
   app.use('/source-images', express.static('uploads'))
 
   app.listen(PORT, () => {
-    console.log('Server is running on port ' + PORT);
+    console.log('[SERVER]: Server is running on port ' + PORT);
   });
 }).catch((err: Error) => {
-  console.log(err);
+  console.log('[SERVER]: ', err);
 });
 
 export { app };

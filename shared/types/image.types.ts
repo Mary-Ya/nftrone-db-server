@@ -14,6 +14,8 @@ export interface ImagesToPost {
   files: File[];
   projectID: string;
   layerID: string;
+  width: number;
+  height: number;
 }
 
 

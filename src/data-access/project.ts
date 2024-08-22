@@ -29,12 +29,12 @@ export const buildProjectsDB = ({
   }
 
   const findById = async (id: string) => {
-    console.log('findById', id);
     const proj = (await model.findOne({
       where: { id }
     }))?.toJSON();
 
     if (!proj) {
+      console.log('[PROJECT]: No project found for this ID:', id);
       return null;
     }
 

@@ -4,10 +4,11 @@ import { imageEndpoints } from '../../shared/endpoints/image';
 import multer from 'multer';
 import fs from 'fs';
 import mime from 'mime-types';
-import { ImagesToPost } from '../../shared/types/image.types';
+import { ImagesToPost, ImageAttributes } from "../../shared/types/image.types";
 import { buildLayersDB } from '../data-access/layer';
 import { buildImagesDB } from '../data-access/image';
 import { buildProjectsDB } from '../data-access/project';
+import { LayerAttributes } from "../../shared/types/layer.types";
 
 const sourceImagesRoot = './uploads';
 
@@ -102,10 +103,17 @@ const getImagesRouter = (prodModels: ModelsType) => {
 
       const images = req.files as Express.Multer.File[];
       const imageSavers = images.map((image) => {
-        return ImagesDB.create({
+        console.log('Image:', image);
+        const img: ImageAttributes = {
           layerID: layerID,
           name: image.filename,
-        });
+        }
+        // svgDim.get(image.path, function (_err: string, dimensions: { width: any; height: any; }) {
+        //   console.log(dimensions.width, dimensions.height);
+        //   img.width = dimensions.width;
+        //   img.height = dimensions.height;
+        // })
+        return ImagesDB.create(img);
       });
 
       return Promise.all(imageSavers).then((images) => {
@@ -124,60 +132,93 @@ const getImagesRouter = (prodModels: ModelsType) => {
     });
   });
 
+  const getRandomImage = (takenIndexes: boolean[]) => {
+    console.log('Taken indexes:', takenIndexes);
+    if (!takenIndexes.find((i) => !i)) {
+      return null;
+    }
+
+    let randomIndex = Math.floor(Math.random() * takenIndexes.length);
+    console.log('Random index:', randomIndex);
+    if (takenIndexes[randomIndex]) {
+      return getRandomImage(takenIndexes);
+    }
+
+    return randomIndex;
+  }
+
+  function randomIndex(length: number) {
+    return Math.floor(Math.random() * length);
+  }
+
   router.get(imageEndpoints.root + imageEndpoints.generate, async (req, res) => {
     const { projectID } = req.params;
     console.log('Request params:', req.params);
 
-    console.log('[DEBUG] Images:');
     const project = await ProjectsDB.findById(projectID);
     console.log('Project found:', project);
-    const layers = (project as any).layers;
+    const layers = (project as any).layers as LayerAttributes[];
     if (!layers) {
       return res.status(404).send({ message: 'Layers not found' });
     }
+    console.log('Layers found:', layers.length);
 
-    const layerCount = layers.length;
-    let takenIndexes: boolean[] = [];
+    const reachLayersLoader = layers.map((layer: any) => LayersDB.findById(layer.id));
 
-    // for each layer, get image count. 
-    // if image count is more than 0, pick one randomly
-    // if image count is 0, skip.
-    // if image count is 0 for all layers, return error
-    const p = layers.map((layer: any) => {
-      let result: any[] = [];
-      takenIndexes = [];
-      return LayersDB.findById(layer.id).then((layer: any) => {
-        const imageCount = layer.images?.length;
-        if (imageCount > 0) {
-          let randomIndex = Math.floor(Math.random() * imageCount);
-          if (takenIndexes[randomIndex]) {
-            randomIndex = Math.floor(Math.random() * imageCount);
-            result[layer.order] = layer.images[randomIndex];
-          } else {
-            takenIndexes[randomIndex] = true;
-            result[layer.order] = layer.images[randomIndex];
-          }
-        }
-        console.log('Images found:', result);
-        return result;
-      });
-    });
+    const reachLayers = await Promise.all(reachLayersLoader)
 
-    console.log('[DEBUG] Images:');
-    const result = await Promise.all(p).then((result) => {
-      if (result.length === 0) {
-        return res.status(404).send({ message: 'Images not found' });
+    //   .then((layers) => {
+    //   console.log('Layers loaded:', layers);
+    //   return layers.filter((layer) => {
+    //     console.log('Layer:', layer);
+    //     const layerImages = (layer as any).images as any[];
+    //     layerImages && layerImages.length > 0;
+    //   });
+    // });
+
+    console.log('Reach layers:', reachLayers.length);
+
+    if (reachLayers.length === 0) {
+      return res.status(404).send({ message: 'No layers with images found' });
+    }
+
+    const numCombos = layers.reduce((acc, layer, index) => {
+      if (acc > 10) {
+        reachLayers.length = 10;
+        return acc;
       }
-      console.log('Images found:', result);
-      return result;
-    });
+      return acc * ((reachLayers as any)[index].images as any[]).length
+    }, 1);
+
+    console.log('Number of combos:', numCombos);
+    const combos = new Set<string>();
+    const result: ImageAttributes[][] = [];
+
+    while (combos.size < numCombos) {
+      const combo = reachLayers.map((layer) => {
+        const images = (layer as any).images as any[];
+        const ind = randomIndex(images.length);
+        const image = images[ind];
+        console.log('Image:', image);
+        return images ? ind : -1
+      });
+      console.log('Combo:', combo);
+      if (combo.every(index => index === -1)) {
+        console.log('No valid images found in any layer.');
+        break;
+      }
+      const comboKey = combo.join(',');
+      combos.add(comboKey);
+    }
+    console.log('Combos:', combos);
 
     return res.status(200).send({
       body: {
-        message: 'Layers found',
-        result: (result as any[]).map((r) => {
-          return r[0];
-        })
+        message: 'Combos generated',
+        result: Array.from(combos).map((combo) => combo.split(',').map((imageIndex, layerIndex) => {
+          const images = (reachLayers[reachLayers.length - 1 - layerIndex] as any).images as any[];
+          return images[imageIndex as any];
+        })),
       }
     });
 
@@ -185,6 +226,5 @@ const getImagesRouter = (prodModels: ModelsType) => {
 
   return router;
 }
-
 
 export { getImagesRouter };

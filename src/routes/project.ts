@@ -48,19 +48,21 @@ const getProjectRouter = (prodModels: ModelsType) => {
       canvas_width,
       background_color
     });
-    console.log(newProject);
+    console.log('[PROJECT]: New project: ', newProject);
     newProject.validate().then(() => {
 
-      console.log('Project is valid');
+      console.log('[PROJECT]: Project is valid');
       newProject.save().then(() => {
         res.send({
           message: 'Project created successfully',
           project: newProject
         });
       }).catch((err: Error) => {
+        console.log('[PROJECT]: Error creating project: ', err);
         res.send(err);
       });
     }).catch((err: Error) => {
+      console.log('[PROJECT]: Error validating project: ', err);
       res.send(err);
     });
   });
