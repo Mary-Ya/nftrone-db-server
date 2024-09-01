@@ -160,17 +160,22 @@ const getImagesRouter = (prodModels: ModelsType) => {
 
     const reachLayersLoader = layers.map((layer: any) => LayersDB.findById(layer.id));
 
-    const reachLayers = await Promise.all(reachLayersLoader)
+    const reachLayersAll = await (await Promise.all(reachLayersLoader))
+
+    // make sure that all layers are with readable values
+    // TBD: make sure that it's impossible to have layers without any readable data at all
+    const reachLayers = reachLayersAll.filter(Boolean);
+    console.log('reachLayers:', reachLayers.length);
 
     if (reachLayers.length === 0) {
       return res.status(404).send({ message: 'No layers with images found' });
     }
 
     const numCombos = layers.reduce((acc, layer, index) => {
-      if (acc > 10) {
-        reachLayers.length = 10;
-        return acc;
-      }
+      // if (acc > 10) {
+      //   reachLayers.length = 10;
+      //   return acc;
+      // }
       return acc * ((reachLayers as any)[index].images as any[]).length
     }, 1);
 
@@ -178,21 +183,31 @@ const getImagesRouter = (prodModels: ModelsType) => {
 
     const combos = new Set<string>();
 
-    while (combos.size < numCombos) {
+    // allow only 10 combos for now
+    while (combos.size < Math.min(numCombos, 10)) {
+      let hasImage = false;
+      // console.log(reachLayers)
+      console.log('reachLayers:', reachLayers.length);
       const combo = reachLayers.map((layer) => {
-        const images = (layer as any).images as any[];
+        const images = layer.images;
+        console.log('images:', images?.length);
+        if (!images) {
+          return -1;
+        }
+        hasImage = true;
         const ind = randomIndex(images.length);
-
-        return images ? ind : -1
+        return ind;
       });
 
-      if (combo.every(index => index === -1)) {
+      if (!hasImage) {
         break;
       }
+      console.log('Combo:', combo.length);
+      // transformed into a string to be able to have unique combos in Set without having to compare arrays
       const comboKey = combo.join(',');
       combos.add(comboKey);
+      console.log('Combo: ', comboKey, "combos size: ", combos.size + 'out of' + numCombos);
     }
-
     return res.status(200).send({
       body: {
         message: 'Combos generated',
